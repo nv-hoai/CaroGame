@@ -1,0 +1,793 @@
+fileFormatVersion: 2
+guid: 088a1e066b0726b43a68d0407ba0dc33
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6630923620535883653
+    second: avatarFrame_0
+  - first:
+      213: -8648020726036521844
+    second: avatarFrame_1
+  - first:
+      213: 4625557600217708907
+    second: avatarFrame_2
+  - first:
+      213: -7502917745422961276
+    second: avatarFrame_3
+  - first:
+      213: -518368903083071827
+    second: avatarFrame_4
+  - first:
+      213: -4401360786883525682
+    second: avatarFrame_5
+  - first:
+      213: 5677291436792372699
+    second: avatarFrame_6
+  - first:
+      213: -1104211409644058319
+    second: avatarFrame_7
+  - first:
+      213: 836912954273306797
+    second: avatarFrame_8
+  - first:
+      213: 6112493435090219748
+    second: avatarFrame_9
+  - first:
+      213: -2790624572755299527
+    second: avatarFrame_10
+  - first:
+      213: -2519758972866592005
+    second: avatarFrame_11
+  - first:
+      213: -4880045642481602553
+    second: avatarFrame_12
+  - first:
+      213: -4482648310638006779
+    second: avatarFrame_13
+  - first:
+      213: 1873130077618699442
+    second: avatarFrame_14
+  - first:
+      213: -7274863074556349473
+    second: avatarFrame_15
+  - first:
+      213: -1630705596179391975
+    second: avatarFrame_16
+  - first:
+      213: -5402807689872256333
+    second: avatarFrame_17
+  - first:
+      213: 5237423456666093063
+    second: avatarFrame_18
+  - first:
+      213: 4984554158447327196
+    second: avatarFrame_19
+  - first:
+      213: 4226301236208997555
+    second: avatarFrame_20
+  - first:
+      213: 5438108568665506169
+    second: avatarFrame_21
+  - first:
+      213: 6632341044217120610
+    second: avatarFrame_22
+  - first:
+      213: -3437140699687762637
+    second: avatarFrame_23
+  - first:
+      213: -2591182706540729405
+    second: avatarFrame_24
+  - first:
+      213: -8960033032059875212
+    second: avatarFrame_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: avatarFrame_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3651
+        width: 5079
+        height: 1428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b782639691a3af3a0800000000000000
+      internalID: -6630923620535883653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_1
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2938
+        width: 178
+        height: 716
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8c906608fe0cf780800000000000000
+      internalID: -8648020726036521844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_2
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2938
+        width: 178
+        height: 716
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b69b5115128413040800000000000000
+      internalID: 4625557600217708907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2581
+        width: 112
+        height: 891
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 485f61d001840e790800000000000000
+      internalID: -7502917745422961276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_4
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2869
+        width: 178
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da6ef15aa326ec8f0800000000000000
+      internalID: -518368903083071827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_5
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2869
+        width: 178
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec349790fa93be2c0800000000000000
+      internalID: -4401360786883525682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_6
+      rect:
+        serializedVersion: 2
+        x: 4968
+        y: 2581
+        width: 111
+        height: 891
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdd50607b7ac9ce40800000000000000
+      internalID: 5677291436792372699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_7
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2787
+        width: 178
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1398b33c29d0da0f0800000000000000
+      internalID: -1104211409644058319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_8
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2787
+        width: 178
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da81263d5ef4d9b00800000000000000
+      internalID: 836912954273306797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_9
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2705
+        width: 178
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e2b572d460f3d450800000000000000
+      internalID: 6112493435090219748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_10
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2705
+        width: 178
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 933b1778cb5b549d0800000000000000
+      internalID: -2790624572755299527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_11
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2581
+        width: 178
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf20fae7094080dd0800000000000000
+      internalID: -2519758972866592005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_12
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2581
+        width: 178
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 700f0300858964cb0800000000000000
+      internalID: -4880045642481602553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1606
+        width: 112
+        height: 892
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50eaa6f8c1f6ac1c0800000000000000
+      internalID: -4482648310638006779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_14
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2411
+        width: 178
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bcff8e91e1bef910800000000000000
+      internalID: 1873130077618699442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_15
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2411
+        width: 178
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd3767bd39e7a0b90800000000000000
+      internalID: -7274863074556349473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_16
+      rect:
+        serializedVersion: 2
+        x: 4968
+        y: 1606
+        width: 111
+        height: 892
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91a5c7e66e19e59e0800000000000000
+      internalID: -1630705596179391975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_17
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2329
+        width: 178
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b25a67080f5505b0800000000000000
+      internalID: -5402807689872256333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_18
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2329
+        width: 178
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70681e082e01fa840800000000000000
+      internalID: 5237423456666093063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_19
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2247
+        width: 178
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd7f2f90991bc2540800000000000000
+      internalID: 4984554158447327196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_20
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2247
+        width: 178
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b4180a1596d6aa30800000000000000
+      internalID: 4226301236208997555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_21
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 2178
+        width: 178
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 971c05d4eea087b40800000000000000
+      internalID: 5438108568665506169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_22
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 2178
+        width: 178
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2670ec14a0fca0c50800000000000000
+      internalID: 6632341044217120610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_23
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 5079
+        height: 1428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 335c2109eb2dc40d0800000000000000
+      internalID: -3437140699687762637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_24
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 1425
+        width: 178
+        height: 716
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cb218c9e054a0cd0800000000000000
+      internalID: -2591182706540729405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: avatarFrame_25
+      rect:
+        serializedVersion: 2
+        x: 4721
+        y: 1425
+        width: 178
+        height: 716
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4701e4cfd6197a380800000000000000
+      internalID: -8960033032059875212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      avatarFrame_0: -6630923620535883653
+      avatarFrame_1: -8648020726036521844
+      avatarFrame_10: -2790624572755299527
+      avatarFrame_11: -2519758972866592005
+      avatarFrame_12: -4880045642481602553
+      avatarFrame_13: -4482648310638006779
+      avatarFrame_14: 1873130077618699442
+      avatarFrame_15: -7274863074556349473
+      avatarFrame_16: -1630705596179391975
+      avatarFrame_17: -5402807689872256333
+      avatarFrame_18: 5237423456666093063
+      avatarFrame_19: 4984554158447327196
+      avatarFrame_2: 4625557600217708907
+      avatarFrame_20: 4226301236208997555
+      avatarFrame_21: 5438108568665506169
+      avatarFrame_22: 6632341044217120610
+      avatarFrame_23: -3437140699687762637
+      avatarFrame_24: -2591182706540729405
+      avatarFrame_25: -8960033032059875212
+      avatarFrame_3: -7502917745422961276
+      avatarFrame_4: -518368903083071827
+      avatarFrame_5: -4401360786883525682
+      avatarFrame_6: 5677291436792372699
+      avatarFrame_7: -1104211409644058319
+      avatarFrame_8: 836912954273306797
+      avatarFrame_9: 6112493435090219748
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
