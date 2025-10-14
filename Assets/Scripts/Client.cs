@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 [System.Serializable]
 public class MoveData
@@ -265,10 +266,14 @@ public class Client : MonoBehaviour
     {
         Debug.Log($"Received message: {message}");
 
-        if (message.StartsWith("GAME_MOVE:"))
+        if (message.StartsWith("GAME_MOVE:") || message.StartsWith("AI_MOVE:"))
         {
             try
             {
+                if (message.StartsWith("AI_MOVE"))
+                {
+                    message = message.Replace("AI_MOVE:", "GAME_MOVE:");
+                }
                 string json = message.Substring("GAME_MOVE:".Length);
                 var moveData = JsonUtility.FromJson<MoveData>(json);
                 GameManager.Instance.GameMove(moveData.row, moveData.col);
@@ -330,9 +335,14 @@ public class Client : MonoBehaviour
             
             Debug.Log($"Joined room! Room ID: {roomId}");
         }
-        else if (message.StartsWith("MATCH_FOUND:"))
+        else if (message.StartsWith("MATCH_FOUND:") || message.StartsWith("AI_MATCH_FOUND:"))
         {
+            if (message.StartsWith("AI_MATCH_FOUND:"))
+            {
+                message = message.Replace("AI_ROOM_CREATED:", "MATCH_FOUND:");
+            }
             string roomId = message.Substring("MATCH_FOUND:".Length);
+            PlayWithAI();
             OnMatchFound?.Invoke(roomId);
 
             Debug.Log($"Room is full! Getting ready to start!");
@@ -454,6 +464,43 @@ public class Client : MonoBehaviour
         MyPlayerSymbol = symbol;
         
         Debug.Log($"My player symbol set to: {symbol}");
+    }
+
+    private void PlayWithAI()
+    {
+        PlayerInfo aiPlayer = new PlayerInfo
+        {
+            playerId = "AI_01",
+            playerName = "AI_Opponent",
+            playerLevel = 1,
+            playerElo = 1000
+        };
+        OpponentInfo = aiPlayer;
+    }
+
+    public async Task ServerDiscovery()
+    {
+        int udpPort = 5001;
+        var udp = new UdpClient() { EnableBroadcast = true };
+
+        var msg = Encoding.UTF8.GetBytes("DISCOVER");
+        await udp.SendAsync(msg, msg.Length, new IPEndPoint(IPAddress.Broadcast, udpPort));
+        Console.WriteLine("Broadcast sent.");
+
+        var result = await udp.ReceiveAsync();  // chờ phản hồi
+        string reply = Encoding.UTF8.GetString(result.Buffer);
+        udp.Close(); // tắt discovery ngay sau khi nhận được
+
+        var parts = reply.Split(':');
+        IPAddress ip = IPAddress.Parse(parts[0]);
+        int port = int.Parse(parts[1]);
+
+        serverIP = ip.ToString();
+        serverPort = port;
+
+        Debug.Log($"Found server at {ip} : {port}");
+        
+        await ConnectToServer();
     }
 
     public bool IsConnected => isConnected;

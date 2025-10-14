@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayModePanel : MonoBehaviour
@@ -13,8 +14,10 @@ public class PlayModePanel : MonoBehaviour
         await GameManager.Instance.Client.SendMessage("FIND_MATCH");
     }
 
-    public void PlayPVE()
+    public async void PlayPVE()
     {
         //Play with AI
+        CanvasManager.Instance.OpenPanel(8);
+        await GameManager.Instance.Client.SendMessage("PLAY_WITH_AI");
     }
 }

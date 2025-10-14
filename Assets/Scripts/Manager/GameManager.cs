@@ -23,13 +23,14 @@ public class GameManager : MonoBehaviour
 
     private async void Start()
     {
+        Application.runInBackground = true;
         Client = GetComponent<Client>();
 
         if (Client != null)
         {
             try
             {
-                await Client.ConnectToServer();
+                await Client.ServerDiscovery();
 
                 //Sample data, later to send account info and receive player data
                 Client.MyPlayerInfo = new PlayerInfo
@@ -57,5 +58,7 @@ public class GameManager : MonoBehaviour
     {
         board.GetComponent<Board>().MakeMove(row, col);
     }
+
+        
 
 }

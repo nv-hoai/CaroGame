@@ -7,6 +7,7 @@ public class StartEndPanel : MonoBehaviour
     public TextMeshProUGUI title, result;
     public Avatar p1, p2;
     public Transform homeButton;
+    public Board board;
 
     private void Start()
     {
@@ -18,6 +19,11 @@ public class StartEndPanel : MonoBehaviour
 
     public void GameStart(string roomId, string currentPlayer)
     {
+        if (board != null)
+        {
+            board.ResetBoard();
+            board.SetAvatar();
+        }
         title.text = "Match Start";
         result.text = string.Empty;
         p1.SetPlayerName(GameManager.Instance.Client.MyPlayerInfo.playerName);
@@ -54,5 +60,6 @@ public class StartEndPanel : MonoBehaviour
         result.text ="Winner: " + winnerName;
         homeButton.gameObject.SetActive(true);
         CanvasManager.Instance.OpenPanel(6);
+        CanvasManager.Instance.DisableClose();
     }
 }

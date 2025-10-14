@@ -12,6 +12,13 @@ public class CanvasManager : MonoBehaviour
     public TMP_Dropdown graphicQualityDropdown;
 
     public int currentCanvasIndex, currentPanelIndex;
+    private int[,] resolutions = new int[4, 2]
+    {
+        { 1920, 1080 },
+        { 1600, 900 },
+        { 1366, 768 },
+        { 1280, 720 }
+    };
 
     private void Awake()
     {
@@ -90,8 +97,9 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    public void ChangeGraphicQuality()
+    public void ChangeResolution()
     {
-        QualitySettings.SetQualityLevel(graphicQualityDropdown.value);
+        bool isFullScreen = graphicQualityDropdown.value == 3;
+        Screen.SetResolution(resolutions[graphicQualityDropdown.value, 0], resolutions[graphicQualityDropdown.value, 1], isFullScreen);
     }
 }

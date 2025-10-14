@@ -13,6 +13,7 @@ public class SettingPanel : MonoBehaviour
     public void BackHome()
     {
         _ = GameManager.Instance.Client.LeaveMatch();
+        CanvasManager.Instance.CloseCurrentPanel();
         CanvasManager.Instance.SwitchCanvas(1);
     }
 

@@ -38,24 +38,27 @@ public class AudioManager : MonoBehaviour
 
     public void ChangeMasterVol()
     {
+        float dB = Mathf.Lerp(-80f, 0f, masterSlider.value);
         if (audioMixer != null && masterSlider != null)
-            audioMixer.SetFloat("MasterVol", masterSlider.value);
+            audioMixer.SetFloat("MasterVol", dB);
         else
             Debug.LogWarning("AudioMixer or Master Slider is not assigned.");
     }
 
     public void ChangeMusicVol()
     {
+        float dB = Mathf.Lerp(-80f, 0f, musicSlider.value);
         if (audioMixer != null && musicSlider != null)
-            audioMixer.SetFloat("MusicVol", musicSlider.value);
+            audioMixer.SetFloat("MusicVol", dB);
         else
             Debug.LogWarning("AudioMixer or Music Slider is not assigned.");
     }
 
     public void ChangeSFXVol()
     {
+        float dB = Mathf.Lerp(-80f, 0f, sfxSlider.value);
         if (audioMixer != null && sfxSlider != null)
-            audioMixer.SetFloat("SFXVol", sfxSlider.value);
+            audioMixer.SetFloat("SFXVol", dB);
         else
             Debug.LogWarning("AudioMixer or SFX Slider is not assigned.");
     }

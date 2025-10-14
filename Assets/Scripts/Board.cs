@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Board : MonoBehaviour, IDropHandler
+public class Board : MonoBehaviour
 {
     public int boardSize = 15;
     public GameObject cellPrefab;
@@ -15,6 +15,7 @@ public class Board : MonoBehaviour, IDropHandler
 
     private Cell[,] cells;
     private GridLayoutGroup grid;
+    private bool initDone = false;
 
     void Start()
     {
@@ -41,16 +42,20 @@ public class Board : MonoBehaviour, IDropHandler
                 btn.onClick.AddListener(() => OnCellClick(ix, iy));
             }
         }
+        initDone = true;
+        SetAvatar();
     }
 
     public void SetAvatar()
     {
+        if (!initDone) return;
         p1.SetPlayerName(GameManager.Instance.Client.MyPlayerInfo.playerName);
         p2.SetPlayerName(GameManager.Instance.Client.OpponentInfo.playerName);
     }
 
     public void ResetBoard()
     {
+        if (!initDone) return;
         foreach (Cell cell in cells)
         {
             cell.SetCell(blankSprite);
@@ -79,10 +84,5 @@ public class Board : MonoBehaviour, IDropHandler
         }
 
         cells[row, col].SetCell(currentPlayerSymbol == "X" ? xSprite : oSprite);
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
     }
 }
