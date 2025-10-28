@@ -1,24 +1,17 @@
+using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
     public static CanvasManager Instance { get; private set; }
 
-    public Transform bgImage;
-    public List<Transform> canvases;
-    public List<Transform> panels;
-    public TMP_Dropdown graphicQualityDropdown;
+    public Dictionary<string, GameObject> panelDict;
+    public Dictionary<string, GameObject> canvasDict;
+    public Dictionary<string, Action<string>> actDict;
 
-    public int currentCanvasIndex, currentPanelIndex;
-    private int[,] resolutions = new int[4, 2]
-    {
-        { 1920, 1080 },
-        { 1600, 900 },
-        { 1366, 768 },
-        { 1280, 720 }
-    };
+    public string currentPanel;
+    public string currentCanvas;
 
     private void Awake()
     {
@@ -35,71 +28,59 @@ public class CanvasManager : MonoBehaviour
 
     private void Start()
     {
-        currentCanvasIndex = 1;
-        currentPanelIndex = -1;
+        panelDict = new Dictionary<string, GameObject>();
+        canvasDict = new Dictionary<string, GameObject>();
+        actDict = new Dictionary<string, Action<string>>()
+        {
+            {"OpenPanel", (panel) => OpenPanel(panel)},
+            {"ClosePanel", (panel) => ClosePanel(panel) },
+            {"OpenCanvas", (panel) => OpenCanvas(panel) },
+            {"CloseCanvas", (panel) => CloseCanvas(panel) }
+        };
+
+        currentPanel = string.Empty;
+        currentCanvas = string.Empty;
     }
 
-    public void OpenPanel(int index)
+    public void OpenPanel(string panel)
     {
-        CloseCurrentPanel();
+        ClosePanel(currentPanel);
 
-        if (index >= 0 && index < panels.Count)
+        if (panelDict.ContainsKey(panel))
         {
-            currentPanelIndex = index;
-            panels[0].gameObject.SetActive(true);
-            panels[index].gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("Invalid panel index: " + index);
-        }
-
-        AudioManager.Instance.PlayClickSound();
-    }
-
-    public void CloseCurrentPanel()
-    {
-        if (currentPanelIndex > -1)
-        {
-            panels[currentPanelIndex].gameObject.SetActive(false);
-            panels[0].gameObject.SetActive(false);
-            currentPanelIndex = -1;
+            GameObject panelToOpen = panelDict[panel];
+            panelToOpen.SetActive(true);
+            currentPanel = panel;
         }
     }
 
-    public void DisableClose()
+    public void ClosePanel(string panel)
     {
-        if (currentPanelIndex > -1)
+        if (panelDict.ContainsKey(panel))
         {
-            panels[0].gameObject.SetActive(false);
+            GameObject gameObject = panelDict[panel];
+            gameObject.SetActive(false);
+            currentPanel = string.Empty;
         }
     }
 
-    public void SwitchCanvas(int index)
+    public void OpenCanvas(string canvas)
     {
-        if (index >= 0 && index < canvases.Count)
+        if (canvasDict.ContainsKey(canvas))
         {
-            canvases[currentCanvasIndex].gameObject.SetActive(false);
-            if (index == 1)
-            {
-                bgImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                bgImage.gameObject.SetActive(false);
-            }
-            currentCanvasIndex = index;
-            canvases[currentCanvasIndex].gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("Invalid canvas index: " + index);
+            GameObject canvasToOpen = canvasDict[canvas];
+            canvasToOpen.SetActive(true);
+            currentCanvas = canvas;
         }
     }
 
-    public void ChangeResolution()
+    public void CloseCanvas(string canvas)
     {
-        bool isFullScreen = graphicQualityDropdown.value == 3;
-        Screen.SetResolution(resolutions[graphicQualityDropdown.value, 0], resolutions[graphicQualityDropdown.value, 1], isFullScreen);
+        if (canvasDict.ContainsKey(canvas))
+        {
+            GameObject gameObject = canvasDict[canvas];
+            gameObject.SetActive(false);
+            currentCanvas = string.Empty;
+        }
     }
 }

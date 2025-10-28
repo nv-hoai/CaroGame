@@ -11,16 +11,15 @@ public class Board : MonoBehaviour
     public Sprite blankSprite;
     public Sprite xSprite;
     public Sprite oSprite;
-    public Avatar p1, p2;
 
     private Cell[,] cells;
     private GridLayoutGroup grid;
-    private bool initDone = false;
 
     void Start()
     {
         grid = gameObject.GetComponent<GridLayoutGroup>();
         cells = new Cell[boardSize, boardSize];
+        GameManager.Instance.board = this;
         CreateBoard();
     }
 
@@ -42,24 +41,12 @@ public class Board : MonoBehaviour
                 btn.onClick.AddListener(() => OnCellClick(ix, iy));
             }
         }
-        initDone = true;
-        SetAvatar();
-    }
-
-    public void SetAvatar()
-    {
-        if (!initDone) return;
-        p1.SetPlayerName(GameManager.Instance.Client.MyPlayerInfo.playerName);
-        p2.SetPlayerName(GameManager.Instance.Client.OpponentInfo.playerName);
     }
 
     public void ResetBoard()
     {
-        if (!initDone) return;
         foreach (Cell cell in cells)
-        {
             cell.SetCell(blankSprite);
-        }
     }
 
     void OnCellClick(int row, int col)

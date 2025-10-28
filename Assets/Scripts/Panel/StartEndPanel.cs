@@ -1,65 +1,77 @@
 using System.Collections;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
 public class StartEndPanel : MonoBehaviour
 {
     public TextMeshProUGUI title, result;
-    public Avatar p1, p2;
-    public Transform homeButton;
+    public GameObject homeButton1, homeButton2;
     public Board board;
+    public GameObject img;
 
     private void Start()
     {
+        CanvasManager.Instance.panelDict.Add("StartEndPanel", gameObject);
+
         GameManager.Instance.Client.OnGameStarted += ((roomId, currentPlayer) => GameStart(roomId, currentPlayer));
         GameManager.Instance.Client.OnGameEnded += ((reason, winner) => GameEnd(reason, winner));
 
-        gameObject.SetActive(false);
+        StartCoroutine(Hide());
     }
 
     public void GameStart(string roomId, string currentPlayer)
     {
         if (board != null)
-        {
             board.ResetBoard();
-            board.SetAvatar();
-        }
+
         title.text = "Match Start";
         result.text = string.Empty;
-        p1.SetPlayerName(GameManager.Instance.Client.MyPlayerInfo.playerName);
-        p2.SetPlayerName(GameManager.Instance.Client.OpponentInfo.playerName);
-        homeButton.gameObject.SetActive(false);
-        CanvasManager.Instance.OpenPanel(6);
-        CanvasManager.Instance.DisableClose();
+
+        img.SetActive(false);
+        homeButton1.SetActive(false);
+        homeButton2.SetActive(true);
+
+        CanvasManager.Instance.OpenPanel("StartEndPanel");
+
         StartCoroutine(HidePanel());
+    }
+
+    IEnumerator Hide()
+    {
+        yield return new WaitForEndOfFrame();
+        gameObject.SetActive(false);
     }
 
     IEnumerator HidePanel()
     {
         yield return new WaitForSeconds(1.5f);
-        CanvasManager.Instance.SwitchCanvas(2);
-        CanvasManager.Instance.CloseCurrentPanel();
+
+        CanvasManager.Instance.CloseCanvas("ForeCanvas");
+        CanvasManager.Instance.OpenCanvas("GameCanvas");
+        CanvasManager.Instance.ClosePanel("StartEndPanel");
     }
 
     public void GameEnd(string reason, string winner)
     {
-        title.text = "Game Ended";
         string winnerName;
+        title.text = "Game Ended";
         if (winner == "NONE")
-        {
             winnerName = "No one";
-        }
         else if (winner == GameManager.Instance.Client.MyPlayerSymbol)
-        {
-            winnerName = GameManager.Instance.Client.MyPlayerInfo.playerName;
-        }
+            winnerName = GameManager.Instance.Client.MyPlayerInfo.PlayerName;
         else
-        {
-            winnerName = GameManager.Instance.Client.OpponentInfo.playerName;
-        }
+            winnerName = GameManager.Instance.Client.OpponentInfo.PlayerName;
         result.text ="Winner: " + winnerName;
-        homeButton.gameObject.SetActive(true);
-        CanvasManager.Instance.OpenPanel(6);
-        CanvasManager.Instance.DisableClose();
+        
+        homeButton1.SetActive(true);
+
+        CanvasManager.Instance.OpenPanel("StartEndPanel");
+        _ = GameManager.Instance.Client.GetProfile();
+    }
+
+    private void OnDestroy()
+    {
+        CanvasManager.Instance.panelDict.Remove("StartEndPanel");
     }
 }

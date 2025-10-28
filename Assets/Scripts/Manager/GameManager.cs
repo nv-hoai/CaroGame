@@ -1,12 +1,25 @@
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     
     public Client Client { get; private set; }
+    public TMP_Dropdown graphicQualityDropdown;
     public Board board;
+
+    public Dictionary<string, Sprite> avatarSprites = new();
+    private int[,] resolutions = new int[4, 2]
+    {
+        { 1920, 1080 },
+        { 1600, 900 },
+        { 1366, 768 },
+        { 1280, 720 }
+    };
 
     void Awake()
     {
@@ -31,17 +44,6 @@ public class GameManager : MonoBehaviour
             try
             {
                 await Client.ServerDiscovery();
-
-                //Sample data, later to send account info and receive player data
-                Client.MyPlayerInfo = new PlayerInfo
-                {
-                    playerId = "VN01",
-                    playerName = "PlayerOne",
-                    playerLevel = 1,
-                    playerElo = 1000
-                };
-
-                await Client.SendPlayerInfo(Client.MyPlayerInfo);
             }
             catch (Exception ex)
             {
@@ -52,13 +54,33 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Client component not found on GameManager.");
         }
+
+        Addressables.LoadAssetsAsync<Sprite>("avatarIcon", (sprite) =>
+        {
+            avatarSprites[sprite.name] = sprite;
+        }).Completed += handle =>
+        {
+            Debug.Log("All avatars ready!");
+        };
     }
 
     public void GameMove(int row, int col)
     {
-        board.GetComponent<Board>().MakeMove(row, col);
+        if (!board) return;
+        board.MakeMove(row, col);
     }
 
-        
+    public void SetTMPDropdown(TMP_Dropdown dropdown)
+    {
+        graphicQualityDropdown = dropdown;
+        graphicQualityDropdown.onValueChanged.AddListener(delegate { ChangeResolution(); });
+    }
+
+    public void ChangeResolution()
+    {
+        bool isFullScreen = graphicQualityDropdown.value == 3;
+        Screen.SetResolution(resolutions[graphicQualityDropdown.value, 0], 
+                resolutions[graphicQualityDropdown.value, 1], isFullScreen);
+    }
 
 }

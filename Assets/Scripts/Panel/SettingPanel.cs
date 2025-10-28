@@ -3,35 +3,28 @@ using UnityEngine.UI;
 
 public class SettingPanel : MonoBehaviour
 {
-    public Transform buttonContainer;
+    public GameObject img;
+    public GameObject homeButton;
 
     private void Start()
     {
+        CanvasManager.Instance.panelDict.Add("SettingPanel", gameObject);
+        
         gameObject.SetActive(false);
     }
 
     public void BackHome()
     {
         _ = GameManager.Instance.Client.LeaveMatch();
-        CanvasManager.Instance.CloseCurrentPanel();
-        CanvasManager.Instance.SwitchCanvas(1);
+        CanvasManager.Instance.ClosePanel(CanvasManager.Instance.currentPanel);
+        CanvasManager.Instance.CloseCanvas("GameCanvas");
+        CanvasManager.Instance.OpenCanvas("ForeCanvas");
+        img.SetActive(true);
+        homeButton.SetActive(false);
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        if (buttonContainer == null)
-        {
-            Debug.LogWarning("Button container is not assigned.");
-            return;
-        }
-
-        if (CanvasManager.Instance.currentCanvasIndex == 1)
-        {
-            buttonContainer.gameObject.SetActive(false);
-        }
-        else
-        {
-            buttonContainer.gameObject.SetActive(true);
-        }
+        CanvasManager.Instance.panelDict.Remove("SettingPanel");
     }
 }

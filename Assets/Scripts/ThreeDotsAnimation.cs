@@ -14,12 +14,8 @@ public class ThreeDotsAnimation : MonoBehaviour
     private void AnimateDots()
     {
         if (threeDots.text.Length >= 3)
-        {
             threeDots.text = "";
-        }
         else
-        {
             threeDots.text += ".";
-        }
     }
 }

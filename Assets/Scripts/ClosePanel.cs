@@ -5,13 +5,11 @@ public class ClosePanel : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        int currentPanelIndex = CanvasManager.Instance.currentPanelIndex;
+        string currentPanel = CanvasManager.Instance.currentPanel;
 
-        if (currentPanelIndex == 8)
-        {
+        if (currentPanel == "FindMatchPanel")
             _ = GameManager.Instance.Client.LeaveMatch();
-        }
 
-        CanvasManager.Instance.CloseCurrentPanel();
+        CanvasManager.Instance.ClosePanel(currentPanel);
     }
 }
