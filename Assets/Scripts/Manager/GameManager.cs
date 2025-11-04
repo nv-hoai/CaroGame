@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         {
             try
             {
-                await Client.ServerDiscovery();
+                await Client.ConnectToServer();
             }
             catch (Exception ex)
             {

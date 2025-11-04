@@ -12,16 +12,29 @@ using UnityEngine;
 public class Client : MonoBehaviour
 {
     [Header("Connection Settings")]
-    public string serverIP = "127.0.0.1";
+    public string serverIP = "192.168.195.126";
+    public string serverIPFallback = "192.168.195.69";
     public int serverPort = 5000;
+
+    private IPAddress[] serverAddresses;
+
+    [Header("Auto-Reconnect Settings")]
+    public bool enableAutoReconnect = true;
+    public float reconnectDelay = 5f;
+    public float maxReconnectDelay = 60f;
+    public int maxReconnectAttempts = -1;
 
     private TcpClient tcpClient;
     private NetworkStream stream;
     private Thread receiveThread;
     private bool isConnected = false;
+    private bool isManuallyDisconnected = false;
     private CancellationTokenSource cancellationToken;
+    private Coroutine reconnectCoroutine;
+    private float currentReconnectDelay;
+    private int reconnectAttempts;
 
-    // Game state
+
     public bool IsReady { get; private set; } = false;
     public bool BothReady { get; private set; } = false;
     public bool IsInMatch { get; private set; } = false;
@@ -29,26 +42,26 @@ public class Client : MonoBehaviour
     public string MyPlayerSymbol { get; private set; } = "";
     public string CurrentRoomId { get; private set; } = "";
 
-    // Player info
+
     public PlayerInfo MyPlayerInfo { get; set; }
     public PlayerInfo OpponentInfo { get; set; }
 
-    // Authentication state
+
     public bool IsAuthenticated { get; private set; } = false;
     public LoginResponse CurrentUser { get; private set; }
     public ProfileData CurrentProfile { get; private set; }
 
-    // Events for message handling
+
     public event Action<string> OnMessageReceived;
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action<string> OnError;
 
-    // Game-specific events
-    public event Action<string> OnMatchFound; //roomId
-    public event Action<string, string> OnGameStarted; // roomId, currentPlayer
-    public event Action<string> OnTurnChanged; // currentPlayer
-    public event Action<string, string> OnGameEnded; // reason, winner
+
+    public event Action<string> OnMatchFound;
+    public event Action<string, string> OnGameStarted;
+    public event Action<string> OnTurnChanged;
+    public event Action<string, string> OnGameEnded;
     public event Action OnOpponentLeft;
     public event Action OnWaitingForOpponent;
 
@@ -67,10 +80,33 @@ public class Client : MonoBehaviour
     public event Action<string> OnFriendRequestSent;
     public event Action<string> OnFriendRequestAccepted;
     public event Action<PlayerStatsData> OnPlayerStatsReceived;
+    public event Action<ChatMessageData> OnChatMessageReceived;
+    public event Action<MoveData> OnMoveReceived;
 
     private void Start()
     {
         cancellationToken = new CancellationTokenSource();
+        currentReconnectDelay = reconnectDelay;
+        reconnectAttempts = 0;
+
+        serverAddresses = new IPAddress[2];
+        if (IPAddress.TryParse(serverIP, out IPAddress primaryAddress))
+        {
+            serverAddresses[0] = primaryAddress;
+        }
+        else
+        {
+            Debug.LogError($"Invalid primary server IP: {serverIP}");
+        }
+
+        if (IPAddress.TryParse(serverIPFallback, out IPAddress fallbackAddress))
+        {
+            serverAddresses[1] = fallbackAddress;
+        }
+        else
+        {
+            Debug.LogError($"Invalid fallback server IP: {serverIPFallback}");
+        }
     }
 
     public async Task<bool> ConnectToServer()
@@ -78,11 +114,21 @@ public class Client : MonoBehaviour
         try
         {
             tcpClient = new TcpClient();
-            await tcpClient.ConnectAsync(serverIP, serverPort);
+            await tcpClient.ConnectAsync(serverAddresses, serverPort);
             stream = tcpClient.GetStream();
             isConnected = true;
+            isManuallyDisconnected = false;
+            reconnectAttempts = 0;
+            currentReconnectDelay = reconnectDelay;
 
-            // Start receiving messages on background thread
+
+            if (reconnectCoroutine != null)
+            {
+                StopCoroutine(reconnectCoroutine);
+                reconnectCoroutine = null;
+            }
+
+
             receiveThread = new Thread(ReceiveMessages);
             receiveThread.IsBackground = true;
             receiveThread.Start();
@@ -93,8 +139,20 @@ public class Client : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError($"Failed to connect to server: {e.Message}");
+            Debug.LogWarning($"Failed to connect to server: {e.Message}");
             OnError?.Invoke($"Connection failed: {e.Message}");
+
+
+            if (enableAutoReconnect && !isManuallyDisconnected)
+            {
+                reconnectAttempts++;
+                if (reconnectCoroutine != null)
+                {
+                    StopCoroutine(reconnectCoroutine);
+                }
+                reconnectCoroutine = StartCoroutine(AttemptReconnect());
+            }
+
             return false;
         }
     }
@@ -103,8 +161,16 @@ public class Client : MonoBehaviour
     {
         try
         {
+            isManuallyDisconnected = true;
             isConnected = false;
             cancellationToken?.Cancel();
+
+
+            if (reconnectCoroutine != null)
+            {
+                StopCoroutine(reconnectCoroutine);
+                reconnectCoroutine = null;
+            }
 
             receiveThread?.Join(1000);
             stream?.Close();
@@ -180,6 +246,19 @@ public class Client : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Failed to send register request: {e.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> SendChat(string message)
+    {
+        try
+        {
+            return await SendMessage($"CHAT:{message}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to send chat messaege: {e.Message}");
             return false;
         }
     }
@@ -310,7 +389,7 @@ public class Client : MonoBehaviour
             {
                 if (stream != null && stream.CanRead)
                 {
-                    //Waits for data instead of polling
+
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
                     if (bytesRead > 0)
                     {
@@ -325,7 +404,7 @@ public class Client : MonoBehaviour
                             string message = lines[i].Trim();
                             if (!string.IsNullOrEmpty(message))
                             {
-                                //Use thread-safe queue
+
                                 MainThreadDispatcher.Enqueue(() => ProcessMessage(message));
                             }
                         }
@@ -338,7 +417,8 @@ public class Client : MonoBehaviour
                     }
                     else
                     {
-                        // Connection closed
+
+                        Debug.LogWarning("Server closed the connection");
                         break;
                     }
                 }
@@ -352,6 +432,23 @@ public class Client : MonoBehaviour
                 }
                 break;
             }
+        }
+
+
+        if (isConnected && !isManuallyDisconnected && enableAutoReconnect)
+        {
+            Debug.LogWarning("Connection lost. Attempting to reconnect...");
+            MainThreadDispatcher.Enqueue(() =>
+            {
+                isConnected = false;
+                OnDisconnected?.Invoke();
+                reconnectAttempts++;
+                if (reconnectCoroutine != null)
+                {
+                    StopCoroutine(reconnectCoroutine);
+                }
+                reconnectCoroutine = StartCoroutine(AttemptReconnect());
+            });
         }
     }
 
@@ -369,7 +466,7 @@ public class Client : MonoBehaviour
                 CurrentUser = loginResponse;
                 IsAuthenticated = true;
 
-                // Update player info from login data
+
                 MyPlayerInfo = new PlayerInfo
                 {
                     PlayerId = loginResponse.ProfileId.ToString(),
@@ -440,7 +537,7 @@ public class Client : MonoBehaviour
             try
             {
                 string json = message.Substring("LEADERBOARD_DATA:".Length);
-                // Parse array of leaderboard entries
+
                 var wrapper = JsonUtility.FromJson<LeaderboardWrapper>("{\"entries\":" + json + "}");
 
                 Debug.Log($"Leaderboard received with {wrapper.entries.Count} players");
@@ -535,6 +632,7 @@ public class Client : MonoBehaviour
                 string json = message.Substring("GAME_MOVE:".Length);
                 var moveData = JsonUtility.FromJson<MoveData>(json);
                 GameManager.Instance.GameMove(moveData.row, moveData.col);
+                OnMoveReceived?.Invoke(moveData);
             }
             catch (Exception e)
             {
@@ -582,7 +680,7 @@ public class Client : MonoBehaviour
 
             if (IsInMatch)
             {
-                //Logic to handle leaving match
+
                 IsInMatch = false;
             }
 
@@ -603,7 +701,7 @@ public class Client : MonoBehaviour
                 PlayWithAI();
             }
             string roomId = message.Substring("MATCH_FOUND:".Length);
-            
+
             OnMatchFound?.Invoke(roomId);
 
             Debug.Log($"Room is full! Getting ready to start!");
@@ -709,6 +807,13 @@ public class Client : MonoBehaviour
 
             Debug.Log("Successfully left the match");
         }
+        else if (message.StartsWith("CHAT:"))
+        {
+            string json = message.Substring("CHAT:".Length);
+            var chat = JsonUtility.FromJson<ChatMessageData>(json);
+            OnChatMessageReceived?.Invoke(chat);
+            Debug.Log($"Chat message received from {chat.Sender}: {chat.Message}");
+        }
         else if (message.StartsWith("ERROR:"))
         {
             string errorMsg = message.Substring("ERROR:".Length);
@@ -727,12 +832,12 @@ public class Client : MonoBehaviour
         Debug.Log($"My player symbol set to: {symbol}");
     }
 
-    
+
 
     IEnumerator InvokeAfterFrame(GameStartData gameStart)
     {
-        yield return null; // Wait for the next frame
-        yield return null; // Ensure all UI updates are done
+        yield return null;
+        yield return null;
         OnGameStarted?.Invoke(gameStart.roomId, gameStart.currentPlayer);
     }
 
@@ -751,32 +856,46 @@ public class Client : MonoBehaviour
         OnOpponentInfoReceived?.Invoke(aiPlayer);
     }
 
-    public async Task ServerDiscovery()
-    {
-        int udpPort = 5001;
-        var udp = new UdpClient() { EnableBroadcast = true };
-
-        var msg = Encoding.UTF8.GetBytes("DISCOVER");
-        await udp.SendAsync(msg, msg.Length, new IPEndPoint(IPAddress.Broadcast, udpPort));
-        Console.WriteLine("Broadcast sent.");
-
-        var result = await udp.ReceiveAsync();  // chờ phản hồi
-        string reply = Encoding.UTF8.GetString(result.Buffer);
-        udp.Close(); // tắt discovery ngay sau khi nhận được
-
-        var parts = reply.Split(':');
-        IPAddress ip = IPAddress.Parse(parts[0]);
-        int port = int.Parse(parts[1]);
-
-        serverIP = ip.ToString();
-        serverPort = port;
-
-        Debug.Log($"Found server at {ip} : {port}");
-
-        await ConnectToServer();
-    }
-
     public bool IsConnected => isConnected;
+
+    private IEnumerator AttemptReconnect()
+    {
+        while (!isManuallyDisconnected && enableAutoReconnect)
+        {
+
+            if (maxReconnectAttempts > 0 && reconnectAttempts > maxReconnectAttempts)
+            {
+                Debug.LogError($"Max reconnection attempts ({maxReconnectAttempts}) reached. Giving up.");
+                OnError?.Invoke("Max reconnection attempts reached");
+                yield break;
+            }
+
+            Debug.Log($"Attempting to reconnect... (Attempt {reconnectAttempts}, waiting {currentReconnectDelay}s)");
+
+
+            yield return new WaitForSeconds(currentReconnectDelay);
+
+            var task = ConnectToServer();
+            while (!task.IsCompleted)
+            {
+                yield return null;
+            }
+
+            bool connected = task.Result;
+
+            if (connected)
+            {
+                Debug.Log("Reconnected successfully!");
+                reconnectCoroutine = null;
+                yield break;
+            }
+
+
+            currentReconnectDelay = Mathf.Min(currentReconnectDelay * 2f, maxReconnectDelay);
+        }
+
+        reconnectCoroutine = null;
+    }
 
     private void OnDestroy()
     {

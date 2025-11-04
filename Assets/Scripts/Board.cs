@@ -8,6 +8,7 @@ public class Board : MonoBehaviour
 {
     public int boardSize = 15;
     public GameObject cellPrefab;
+    public GameObject labelPrefab;
     public Sprite blankSprite;
     public Sprite xSprite;
     public Sprite oSprite;
@@ -25,19 +26,34 @@ public class Board : MonoBehaviour
 
     public void CreateBoard()
     {
-        grid.constraintCount = boardSize;
-        for (int x = 0; x < boardSize; x++)
+        grid.constraintCount = boardSize+2;
+        for (int x = 0; x < boardSize+2; x++)
         {
-            for (int y = 0; y < boardSize; y++)
+            for (int y = 0; y < boardSize+2; y++)
             {
                 int ix, iy;
-                ix = x; iy = y;
+                ix = x-1; iy = y-1;
+
+                if (x == 0 || y == 0 || x == boardSize + 1 || y == boardSize + 1)
+                {
+                    GameObject label = Instantiate(labelPrefab, gameObject.transform);
+                    label.GetComponent<TMP_Text>().text = string.Empty;
+                    if (x == 0 && (y > 0 && y < boardSize + 1 ))
+                    {
+                        label.GetComponent<TMP_Text>().text = ((char)('A' + iy)).ToString();
+                    }
+                    if (y == 0 && (x > 0 && x < boardSize + 1))
+                    {
+                        label.GetComponent<TMP_Text>().text = (ix).ToString();
+                    }
+                    continue;
+                }
 
                 GameObject cellObject = Instantiate(cellPrefab, gameObject.transform);
                 Cell cell = cellObject.GetComponent<Cell>();
                 Button btn = cell.GetComponent<Button>();
                 
-                cells[x, y] = cell;
+                cells[ix, iy] = cell;
                 btn.onClick.AddListener(() => OnCellClick(ix, iy));
             }
         }

@@ -6,7 +6,14 @@ public class WaitingPanel : MonoBehaviour
     {
         CanvasManager.Instance.panelDict.Add("WaitingPanel", gameObject);
 
-        gameObject.SetActive(false);
+        GameManager.Instance.Client.OnConnected += () => { gameObject.SetActive(false); };
+        GameManager.Instance.Client.OnDisconnected += () => 
+        {
+            if (gameObject)
+                gameObject.SetActive(true); 
+        };
+
+        gameObject.SetActive(true);
     }
 
     private void OnDestroy()

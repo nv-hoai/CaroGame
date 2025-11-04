@@ -17,6 +17,14 @@ public class GameStartData
 }
 
 [System.Serializable]
+public class ChatMessageData
+{
+    public string Sender;
+    public string Message;
+    public Time Timestamp;
+}
+
+[System.Serializable]
 public class TurnChangeData
 {
     public string currentPlayer;
