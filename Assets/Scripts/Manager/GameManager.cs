@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -49,6 +50,11 @@ public class GameManager : MonoBehaviour
             {
                 Debug.LogError($"Error during connection or data exchange: {ex.Message}");
             }
+
+            Client.OnLogoutSuccess += () =>
+            {
+                SceneManager.LoadScene("LoginScene");
+            };
         }
         else
         {

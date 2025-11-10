@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -123,18 +124,21 @@ public class ProfileData
     public string Bio;
     public string AvatarUrl;
     public int Rank;
+    public bool IsOnline;
 }
 
 [System.Serializable]
 public class LeaderboardEntry
 {
     public int Rank;
+    public int ProfileId;
     public string PlayerName;
     public int Elo;
     public int Level;
     public int Wins;
     public int TotalGames;
     public double WinRate;
+    public string AvatarUrl;
 }
 
 [System.Serializable]
@@ -161,6 +165,18 @@ public class FriendData
     public int Level;
     public int Wins;
     public int TotalGames;
+    public string AvatarUrl;
+    public string Status;
+}
+
+[System.Serializable]
+public class FriendRequestData
+{
+    public int FriendshipId;
+    public int ProfileId;
+    public string PlayerName;
+    public string AvatarUrl;
+    public string RequestedAt;
 }
 
 [System.Serializable]
@@ -193,4 +209,16 @@ public class GameHistoryWrapper
 public class FriendsWrapper
 {
     public List<FriendData> friends;
+}
+
+[System.Serializable]
+public class FriendRequestsWrapper
+{
+    public List<FriendRequestData> requests;
+}
+
+[System.Serializable]
+public class ProfileDataWrapper
+{
+    public List<ProfileData> profiles;
 }

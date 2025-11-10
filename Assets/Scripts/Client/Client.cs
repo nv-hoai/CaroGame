@@ -77,11 +77,14 @@ public class Client : MonoBehaviour
     public event Action<List<LeaderboardEntry>> OnLeaderboardReceived;
     public event Action<List<GameHistoryEntry>> OnGameHistoryReceived;
     public event Action<List<FriendData>> OnFriendsListReceived;
+    public event Action<List<FriendRequestData>> OnFriendRequestsReceived;
     public event Action<string> OnFriendRequestSent;
     public event Action<string> OnFriendRequestAccepted;
     public event Action<PlayerStatsData> OnPlayerStatsReceived;
     public event Action<ChatMessageData> OnChatMessageReceived;
     public event Action<MoveData> OnMoveReceived;
+    public event Action OnLogoutSuccess;
+    public event Action<List<ProfileData>> OnPlayerSearchResultsReceived;
 
     private void Start()
     {
@@ -133,7 +136,7 @@ public class Client : MonoBehaviour
             receiveThread.IsBackground = true;
             receiveThread.Start();
 
-            Debug.Log($"Connected to server at {serverIP}:{serverPort}");
+            Debug.Log($"Connected to server at {serverIP} | {serverIPFallback}:{serverPort}");
             OnConnected?.Invoke();
             return true;
         }
@@ -183,6 +186,59 @@ public class Client : MonoBehaviour
         {
             Debug.LogError($"Error during disconnect: {e.Message}");
         }
+    }
+
+    public async Task Logout()
+    {
+        IsAuthenticated = false;
+        CurrentUser = null;
+        CurrentProfile = null;
+        MyPlayerInfo = null;
+        OpponentInfo = null;
+        IsReady = false;
+        BothReady = false;
+        IsInMatch = false;
+        IsMyTurn = false;
+        MyPlayerSymbol = "";
+        CurrentRoomId = "";
+        ResetEvents();
+        await SendMessage("LOGOUT");
+    }
+
+    private void ResetEvents()
+    {
+        OnMessageReceived = null;
+        OnConnected = null;
+        OnDisconnected = null;
+        OnError = null;
+
+
+        OnMatchFound = null;
+        OnGameStarted = null;
+        OnTurnChanged = null;
+        OnGameEnded = null;
+        OnOpponentLeft = null;
+        OnWaitingForOpponent = null;
+
+        OnUpdatePlayerNameSuccess = null;
+        OnUpdateAvatarSucess = null;
+        OnOpponentInfoReceived = null;
+        OnPlayerInfoReceived = null;
+        OnLoginSuccess = null;
+        OnLoginFailed = null;
+        OnRegisterSuccess = null;
+        OnRegisterFailed = null;
+        OnProfileDataReceived = null;
+        OnLeaderboardReceived = null;
+        OnGameHistoryReceived = null;
+        OnFriendsListReceived = null;
+        OnFriendRequestsReceived = null;
+        OnFriendRequestSent = null;
+        OnFriendRequestAccepted = null;
+        OnPlayerStatsReceived = null;
+        OnChatMessageReceived = null;
+        OnMoveReceived = null;
+        OnPlayerSearchResultsReceived = null;
     }
 
     public new async Task<bool> SendMessage(string message)
@@ -326,14 +382,29 @@ public class Client : MonoBehaviour
         return await SendMessage("GET_FRIENDS");
     }
 
-    public async Task<bool> SendFriendRequest(string playerName)
+    public async Task<bool> GetFriendRequests()
     {
-        return await SendMessage($"SEND_FRIEND_REQUEST:{playerName}");
+        return await SendMessage("GET_FRIEND_REQUESTS");
+    }
+
+    public async Task<bool> SendFriendRequest(int profileId)
+    {
+        return await SendMessage($"SEND_FRIEND_REQUEST:{profileId}");
     }
 
     public async Task<bool> AcceptFriendRequest(int friendshipId)
     {
         return await SendMessage($"ACCEPT_FRIEND_REQUEST:{friendshipId}");
+    }
+
+    public async Task<bool> RejectFriendRequest(int friendshipId)
+    {
+        return await SendMessage($"REJECT_FRIEND_REQUEST:{friendshipId}");
+    }
+    
+    public async Task<bool> SearchPlayerByName(string playerName)
+    {
+        return await SendMessage($"SEARCH_PLAYER:{playerName}");
     }
 
     public async Task<bool> SendGameMove(int row, int col)
@@ -484,6 +555,10 @@ public class Client : MonoBehaviour
                 Debug.LogError($"Failed to parse login response: {e.Message}");
             }
         }
+        else if (message.StartsWith("LOGOUT_SUCCESS:"))
+        {
+            OnLogoutSuccess?.Invoke();
+        }
         else if (message.StartsWith("LOGIN_FAILED:"))
         {
             string errorMsg = message.Substring("LOGIN_FAILED:".Length);
@@ -605,6 +680,20 @@ public class Client : MonoBehaviour
             catch (Exception e)
             {
                 Debug.LogError($"Failed to parse friends list: {e.Message}");
+            }
+        }
+        else if (message.StartsWith("FRIEND_REQUESTS_DATA:"))
+        {
+            try
+            {
+                string json = message.Substring("FRIEND_REQUESTS_DATA:".Length);
+                var wrapper = JsonUtility.FromJson<FriendRequestsWrapper>("{\"requests\":" + json + "}");
+                Debug.Log($"Friend requests received with {wrapper.requests.Count} requests");
+                OnFriendRequestsReceived?.Invoke(wrapper.requests);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to parse friend requests: {e.Message}");
             }
         }
         else if (message.StartsWith("FRIEND_REQUEST_SENT:"))
@@ -821,6 +910,20 @@ public class Client : MonoBehaviour
             Debug.LogError($"Server error: {errorMsg}");
             OnError?.Invoke(errorMsg);
         }
+        else if (message.StartsWith("SEARCH_RESULTS:"))
+        {
+            try
+            {
+                string json = message.Substring("SEARCH_RESULTS:".Length);
+                var wrapper = JsonUtility.FromJson<ProfileDataWrapper>("{\"profiles\":" + json + "}");
+                Debug.Log($"Player search results received with {wrapper.profiles.Count} players");
+                OnPlayerSearchResultsReceived?.Invoke(wrapper.profiles);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to parse player search results: {e.Message}");
+            }
+        }
 
         OnMessageReceived?.Invoke(message);
     }
@@ -899,7 +1002,7 @@ public class Client : MonoBehaviour
 
     private void OnDestroy()
     {
-        Disconnect();
+        if (GameManager.Instance == gameObject.GetComponent<GameManager>()) Disconnect();
         cancellationToken?.Dispose();
     }
 }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEditor.Animations;
 
 public class TrackPanel : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class TrackPanel : MonoBehaviour
         GameManager.Instance.Client.OnMoveReceived += (move) =>
         {
             GameObject trackObj = Instantiate(trackPrefab, transform);
-            trackObj.GetComponent<TMP_Text>().text = $"Row: {move.row}, Column: {'A' + move.col}";
+            trackObj.GetComponent<TMP_Text>().text = $"Row: {move.row}, Column: {('A' + move.col).ToString()}";
             if (transform.childCount > 15)
             {
                 Destroy(transform.GetChild(0).gameObject);

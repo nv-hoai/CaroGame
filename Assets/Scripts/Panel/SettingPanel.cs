@@ -5,6 +5,7 @@ public class SettingPanel : MonoBehaviour
 {
     public GameObject img;
     public GameObject homeButton;
+    public GameObject logoutButton;
 
     private void Start()
     {
@@ -21,6 +22,13 @@ public class SettingPanel : MonoBehaviour
         CanvasManager.Instance.OpenCanvas("ForeCanvas");
         img.SetActive(true);
         homeButton.SetActive(false);
+    }
+
+    public void Logout()
+    {
+        if (GameManager.Instance.Client.IsInMatch)
+            _ = GameManager.Instance.Client.LeaveMatch();
+        _ = GameManager.Instance.Client.Logout();
     }
 
     private void OnDestroy()

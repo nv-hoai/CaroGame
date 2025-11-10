@@ -49,7 +49,7 @@ public class RankPanel : MonoBehaviour
             {
                 GameObject row = Instantiate(rowPrefab, scrollContent.transform);
                 RankRow rankRow = row.GetComponent<RankRow>();
-                rankRow.SetData(entry.Rank, entry.PlayerName, entry.Elo, entry.WinRate);
+                rankRow.SetData(entry.Rank, entry.ProfileId, entry.AvatarUrl, entry.PlayerName, entry.Elo, entry.WinRate);
             }
         }
     }
