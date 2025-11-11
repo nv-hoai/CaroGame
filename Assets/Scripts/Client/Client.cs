@@ -33,6 +33,8 @@ public class Client : MonoBehaviour
     private Coroutine reconnectCoroutine;
     private float currentReconnectDelay;
     private int reconnectAttempts;
+    private byte[] sessionKey;
+    private bool isEncryptionEnabled = false;
 
 
     public bool IsReady { get; private set; } = false;
@@ -124,6 +126,7 @@ public class Client : MonoBehaviour
             reconnectAttempts = 0;
             currentReconnectDelay = reconnectDelay;
 
+            await InitializeEncryption();
 
             if (reconnectCoroutine != null)
             {
@@ -157,6 +160,47 @@ public class Client : MonoBehaviour
             }
 
             return false;
+        }
+    }
+
+    private async Task InitializeEncryption()
+    {
+        try
+        {
+            // Step 1: Request public key
+            await SendRawMessage("GET_PUBLIC_KEY");
+
+            // Step 2: Receive public key (wait for response)
+            string response = await ReceiveRawMessage();
+
+            if (response.StartsWith("PUBLIC_KEY:"))
+            {
+                string json = response.Substring("PUBLIC_KEY:".Length);
+                var data = JsonUtility.FromJson<PublicKeyResponse>(json);
+
+                // Step 3: Generate session key (32 bytes for AES-256)
+                sessionKey = CryptoUtil.GenerateRandomBytes(32);
+
+                // Step 4: Encrypt session key with RSA public key
+                byte[] encryptedSessionKey = CryptoUtil.RsaEncrypt(sessionKey, data.PublicKey);
+                string encryptedBase64 = CryptoUtil.ToBase64(encryptedSessionKey);
+
+                // Step 5: Send encrypted session key to server
+                await SendRawMessage($"SET_SESSION_KEY:{encryptedBase64}");
+
+                // Step 6: Wait for acknowledgment
+                string ack = await ReceiveRawMessage();
+
+                if (ack.StartsWith("SESSION_KEY_ACK:"))
+                {
+                    isEncryptionEnabled = true;
+                    Debug.Log("Encryption enabled successfully!");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Encryption initialization failed: {ex.Message}");
         }
     }
 
@@ -241,6 +285,25 @@ public class Client : MonoBehaviour
         OnPlayerSearchResultsReceived = null;
     }
 
+    // Send unencrypted message (for handshake only)
+    private async Task SendRawMessage(string message)
+    {
+        byte[] data = Encoding.UTF8.GetBytes(message + "\n");
+        await stream.WriteAsync(data, 0, data.Length);
+        await stream.FlushAsync();
+        Debug.Log($"Sent: {message}");
+    }
+
+    // Receive unencrypted message (for handshake only)
+    private async Task<string> ReceiveRawMessage()
+    {
+        byte[] buffer = new byte[4096];
+        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+        string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+        Debug.Log($"Received: {message}");
+        return message;
+    }
+
     public new async Task<bool> SendMessage(string message)
     {
         if (!isConnected || stream == null)
@@ -251,11 +314,20 @@ public class Client : MonoBehaviour
 
         try
         {
-            byte[] data = Encoding.UTF8.GetBytes(message + "\n");
+            string messageToSend = message;
+
+            if (isEncryptionEnabled && sessionKey != null)
+            {
+                byte[] plainBytes = Encoding.UTF8.GetBytes(message);
+                byte[] encryptedBytes = CryptoUtil.AesEncrypt(plainBytes, sessionKey);
+                string encryptedBase64 = CryptoUtil.ToBase64(encryptedBytes);
+                messageToSend = $"ENC:{encryptedBase64}";
+                Debug.Log($"Sending encrypted: {message}");
+            }
+
+            byte[] data = Encoding.UTF8.GetBytes(messageToSend + "\n");
             await stream.WriteAsync(data, 0, data.Length);
             await stream.FlushAsync();
-
-            Debug.Log($"Sent message: {message}");
             return true;
         }
         catch (Exception e)
@@ -460,7 +532,6 @@ public class Client : MonoBehaviour
             {
                 if (stream != null && stream.CanRead)
                 {
-
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
                     if (bytesRead > 0)
                     {
@@ -475,8 +546,11 @@ public class Client : MonoBehaviour
                             string message = lines[i].Trim();
                             if (!string.IsNullOrEmpty(message))
                             {
+                                // Decrypt message if encrypted
+                                string decryptedMessage = DecryptMessageIfNeeded(message);
 
-                                MainThreadDispatcher.Enqueue(() => ProcessMessage(message));
+                                // Process on main thread
+                                MainThreadDispatcher.Enqueue(() => ProcessMessage(decryptedMessage));
                             }
                         }
 
@@ -488,7 +562,6 @@ public class Client : MonoBehaviour
                     }
                     else
                     {
-
                         Debug.LogWarning("Server closed the connection");
                         break;
                     }
@@ -505,7 +578,7 @@ public class Client : MonoBehaviour
             }
         }
 
-
+        // Auto-reconnect logic
         if (isConnected && !isManuallyDisconnected && enableAutoReconnect)
         {
             Debug.LogWarning("Connection lost. Attempting to reconnect...");
@@ -520,6 +593,39 @@ public class Client : MonoBehaviour
                 }
                 reconnectCoroutine = StartCoroutine(AttemptReconnect());
             });
+        }
+    }
+
+    // Helper method to decrypt messages
+    private string DecryptMessageIfNeeded(string message)
+    {
+        try
+        {
+            // Skip decryption for handshake messages
+            if (!isEncryptionEnabled || sessionKey == null)
+            {
+                return message;
+            }
+
+            // Check if message is encrypted
+            if (message.StartsWith("ENC:"))
+            {
+                string encryptedData = message.Substring("ENC:".Length);
+                byte[] encryptedBytes = CryptoUtil.FromBase64(encryptedData);
+                byte[] decryptedBytes = CryptoUtil.AesDecrypt(encryptedBytes, sessionKey);
+                string decryptedMessage = Encoding.UTF8.GetString(decryptedBytes);
+
+                Debug.Log($"[Decrypted] {decryptedMessage}");
+                return decryptedMessage;
+            }
+
+            // Message is not encrypted (during handshake)
+            return message;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Decryption failed: {ex.Message}");
+            return message; // Return original on error
         }
     }
 

@@ -222,3 +222,10 @@ public class ProfileDataWrapper
 {
     public List<ProfileData> profiles;
 }
+
+[System.Serializable]
+public class PublicKeyResponse
+{
+    public string PublicKey;
+    public string Message;
+}
