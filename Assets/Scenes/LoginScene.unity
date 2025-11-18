@@ -15930,6 +15930,7 @@ MonoBehaviour:
   img: {fileID: 0}
   homeButton: {fileID: 0}
   logoutButton: {fileID: 0}
+  settingButton: {fileID: 1780248022}
 --- !u!114 &1745239245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16559,7 +16560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8539909467562269659, guid: ee858dbe8dd75ad40b0eca16ca50ee50, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8539909467562269659, guid: ee858dbe8dd75ad40b0eca16ca50ee50, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -16603,6 +16604,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8472892492113069186, guid: ee858dbe8dd75ad40b0eca16ca50ee50, type: 3}
   m_PrefabInstance: {fileID: 1780248020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1780248022 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8539909467562269659, guid: ee858dbe8dd75ad40b0eca16ca50ee50, type: 3}
+  m_PrefabInstance: {fileID: 1780248020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1808293554
 GameObject:
   m_ObjectHideFlags: 0

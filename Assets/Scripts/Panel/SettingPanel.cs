@@ -6,11 +6,15 @@ public class SettingPanel : MonoBehaviour
     public GameObject img;
     public GameObject homeButton;
     public GameObject logoutButton;
+    public Button settingButton;
 
     private void Start()
     {
         CanvasManager.Instance.panelDict.Add("SettingPanel", gameObject);
         
+        if (settingButton != null)
+            settingButton.onClick.AddListener(() => CanvasManager.Instance.actDict["OpenPanel"]("SettingPanel"));
+
         gameObject.SetActive(false);
     }
 

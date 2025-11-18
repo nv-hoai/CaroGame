@@ -16,10 +16,10 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, Sprite> avatarSprites = new();
     private int[,] resolutions = new int[4, 2]
     {
-        { 1920, 1080 },
-        { 1600, 900 },
+        { 1280, 720 },
         { 1366, 768 },
-        { 1280, 720 }
+        { 1600, 900 },
+        { 1920, 1080 }
     };
 
     void Awake()

@@ -12,7 +12,21 @@ public class TrackPanel : MonoBehaviour
         GameManager.Instance.Client.OnMoveReceived += (move) =>
         {
             GameObject trackObj = Instantiate(trackPrefab, transform);
-            trackObj.GetComponent<TMP_Text>().text = $"Row: {move.row}, Column: {('A' + move.col).ToString()}";
+            int col = 'A' + move.col;
+            char colChar = (char)col;
+            string currentPlayerSymbol = string.Empty;
+            if (GameManager.Instance.Client.IsMyTurn)
+            {
+                if (GameManager.Instance.Client.MyPlayerSymbol == "X")
+                    currentPlayerSymbol = "O";
+                else
+                    currentPlayerSymbol = "X";
+            }
+            else
+            {
+                currentPlayerSymbol = GameManager.Instance.Client.MyPlayerSymbol;
+            }
+            trackObj.GetComponent<TMP_Text>().text = $"Row: {move.row}, Column: {colChar}, {currentPlayerSymbol}";
             if (transform.childCount > 15)
             {
                 Destroy(transform.GetChild(0).gameObject);
